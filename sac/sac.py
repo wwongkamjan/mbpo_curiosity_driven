@@ -77,7 +77,7 @@ class SAC(object):
 
                 #sum over ensemble model
                 loss = torch.sum(loss)
-                losses.append(loss.item())
+                losses.append(float(loss.item()))
 
             # train_input = torch.from_numpy(train_inputs).float().to(self.device)
             # train_label = torch.from_numpy(train_labels).float().to(self.device)
