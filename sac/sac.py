@@ -57,6 +57,7 @@ class SAC(object):
         # dynamics model loss
         losses = []
         if  predict_env:
+
             delta_state_batch = next_state_batch - state_batch
             train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
             # print("in SAC after concat: ", train_inputs.shape)
@@ -85,7 +86,7 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
-            print(losses)
+            print(mean(losses))
             mse_model_loss= mean(losses)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
