@@ -177,7 +177,6 @@ def train(args, env_sampler, env_sampler_test, predict_env, predict_act, agent, 
                             }, model_file)
 
 
-
 def exploration_before_start(args, env_sampler, env_pool, agent):
     for i in range(args.init_exploration_steps):
         cur_state, action, next_state, reward, done, info = env_sampler.sample(agent)
@@ -199,7 +198,6 @@ def train_predict_model(args, env_pool, predict_env, logger):
     delta_state = next_state - state
     inputs = np.concatenate((state, action), axis=-1)
     labels = np.concatenate((np.reshape(reward, (reward.shape[0], -1)), delta_state), axis=-1)
-
     predict_env.model.train(inputs, labels, batch_size=256, holdout_ratio=0.2, logger=logger)
 
 
@@ -209,7 +207,6 @@ def train_inverse_model(args, env_pool, predict_act, logger):
     delta_state = next_state - state
     inputs = np.concatenate((state, delta_state), axis=-1)
     labels = action
-
     predict_act.model.train(inputs, labels, batch_size=256, holdout_ratio=0.2, logger=logger)
 
 
