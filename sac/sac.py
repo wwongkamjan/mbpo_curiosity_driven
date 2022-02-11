@@ -87,10 +87,11 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
+            mse_model_loss = 0
             for i in range (len(batch_loss)):
 
-                print(type(batch_loss[i]))
-            mse_model_loss= mean(batch_loss)
+                mse_model_loss += batch_loss[i]
+            mse_model_loss= mse_model_loss/len(batch_loss)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
