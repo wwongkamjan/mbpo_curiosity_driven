@@ -92,6 +92,7 @@ class SAC(object):
 
                 mse_model_loss += batch_loss[i]
             mse_model_loss= mse_model_loss/len(batch_loss)
+            print(mse_model_loss)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
@@ -119,7 +120,7 @@ class SAC(object):
         policy_loss = ((self.alpha * log_pi) - min_qf_pi).mean() # Jπ = 𝔼st∼D,εt∼N[α * logπ(f(εt;st)|st) − Q(st,f(εt;st))]
         if  predict_env:
             # r_i
-            policy_loss += (1/2)*np.linalg.norm(mse_model_loss, ord=2)
+            policy_loss += (1/2)*mse_model_loss
         
         self.policy_optim.zero_grad()
         policy_loss.backward()
