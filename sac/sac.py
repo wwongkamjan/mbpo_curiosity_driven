@@ -87,7 +87,7 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
-            for i in range len(batch_loss):
+            for i in range (len(batch_loss)):
 
                 print(type(batch_loss[i]))
             mse_model_loss= mean(batch_loss)
