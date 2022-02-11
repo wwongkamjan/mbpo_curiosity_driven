@@ -73,7 +73,7 @@ class SAC(object):
                 # print("in dynamic model: ", train_input.size())
                 mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
                 _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
-                
+
                 #sum over ensemble model
                 loss = torch.sum(loss)
                 losses.append(loss.item())
@@ -85,6 +85,7 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
+            print(losses)
             mse_model_loss= mean(losses)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
