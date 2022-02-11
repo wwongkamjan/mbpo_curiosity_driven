@@ -197,6 +197,7 @@ def train_predict_model(args, env_pool, predict_env, logger):
     state, action, reward, next_state, done = env_pool.sample(len(env_pool))
     delta_state = next_state - state
     inputs = np.concatenate((state, action), axis=-1)
+    print("in dynamics after concat: ", inputs.shape())
     labels = np.concatenate((np.reshape(reward, (reward.shape[0], -1)), delta_state), axis=-1)
     predict_env.model.train(inputs, labels, batch_size=256, holdout_ratio=0.2, logger=logger)
 
@@ -243,6 +244,7 @@ def train_obs_policy(args, env_pool, predict_env, obs_agent):
 
         batch_reward, batch_done = np.squeeze(batch_reward), np.squeeze(batch_done)
         batch_done = (~batch_done).astype(int)
+        
         obs_agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done), args.policy_train_batch_size, i, predict_env)
 
 

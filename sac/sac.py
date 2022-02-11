@@ -58,6 +58,7 @@ class SAC(object):
         if  predict_env:
             delta_state_batch = next_state_batch - state_batch
             train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
+            print("in SAC after concat: ", train_inputs.shape())
             train_labels = np.concatenate((np.reshape(reward_batch, (reward_batch.shape[0], -1)), delta_state_batch), axis=-1)
             predict_env.model.scaler.fit(train_inputs)
             train_inputs = predict_env.model.scaler.transform(train_inputs)
