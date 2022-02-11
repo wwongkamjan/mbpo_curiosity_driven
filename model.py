@@ -231,7 +231,7 @@ class EnsembleDynamicsModel():
                 train_input = torch.from_numpy(train_inputs[idx]).float().to(device)
                 train_label = torch.from_numpy(train_labels[idx]).float().to(device)
                 losses = []
-                print("in dynamic model: ", train_input.shape())
+                print("in dynamic model: ", train_input.size())
                 mean, logvar = self.ensemble_model(train_input, ret_log_var=True)
                 loss, _ = self.ensemble_model.loss(mean, logvar, train_label)
                 self.ensemble_model.train(loss)

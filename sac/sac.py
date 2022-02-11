@@ -63,7 +63,7 @@ class SAC(object):
             train_inputs = predict_env.model.scaler.transform(train_inputs)
             train_input = torch.from_numpy(train_inputs).float().to(self.device)
             train_label = torch.from_numpy(train_labels).float().to(self.device)
-            print("in SAC: ", train_input.shape())
+            print("in SAC: ", train_input.size())
             mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
             _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
