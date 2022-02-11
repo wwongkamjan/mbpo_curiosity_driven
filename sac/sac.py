@@ -62,7 +62,7 @@ class SAC(object):
             train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
             train_labels = np.concatenate((np.reshape(reward_batch, (reward_batch.shape[0], -1)), delta_state_batch), axis=-1)
             predict_env.model.scaler.fit(train_inputs)
-            train_inputs = predict_env.model.transform(train_inputs)
+            train_inputs = predict_env.model.scaler.transform(train_inputs)
             train_input = torch.from_numpy(train_inputs).float().to(self.device)
             train_label = torch.from_numpy(train_labels).float().to(self.device)
             mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
