@@ -52,22 +52,38 @@ class SAC(object):
     def update_parameters(self, memory, batch_size, updates, predict_env=None):
         # Sample a batch from memory
         # state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory.sample(batch_size=batch_size)
-
+        
         state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
         # dynamics model loss
+        losses = []
         if  predict_env:
             delta_state_batch = next_state_batch - state_batch
             train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
-            print("in SAC after concat: ", train_inputs.shape)
+            # print("in SAC after concat: ", train_inputs.shape)
             train_labels = np.concatenate((np.reshape(reward_batch, (reward_batch.shape[0], -1)), delta_state_batch), axis=-1)
             predict_env.model.scaler.fit(train_inputs)
             train_inputs = predict_env.model.scaler.transform(train_inputs)
-            train_input = torch.from_numpy(train_inputs).float().to(self.device)
-            train_label = torch.from_numpy(train_labels).float().to(self.device)
-            print("in SAC: ", train_input.size())
-            mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
-            _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
+            train_idx = np.vstack([np.random.permutation(train_inputs.shape[0]) for _ in range(predict_env.model.network_size)])
+            # train_idx = np.vstack([np.arange(train_inputs.shape[0])] for _ in range(self.network_size))
+            for start_pos in range(0, train_inputs.shape[0], batch_size):
+                idx = train_idx[:, start_pos: start_pos + batch_size]
+                train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
+                train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
+                
+                print("in dynamic model: ", train_input.size())
+                mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
+                _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+                self.ensemble_model.train(loss)
+                losses.append(loss)
+
+            # train_input = torch.from_numpy(train_inputs).float().to(self.device)
+            # train_label = torch.from_numpy(train_labels).float().to(self.device)
+            # # print("in SAC: ", train_input.size())
+            # mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
+            # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+
+            mse_model_loss= mean(losses)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
