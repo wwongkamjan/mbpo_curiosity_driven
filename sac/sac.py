@@ -70,11 +70,9 @@ class SAC(object):
                 idx = train_idx[:, start_pos: start_pos + batch_size]
                 train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
                 train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
-                
-                print("in dynamic model: ", train_input.size())
+                # print("in dynamic model: ", train_input.size())
                 mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
                 _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
-                self.ensemble_model.train(loss)
                 losses.append(loss)
 
             # train_input = torch.from_numpy(train_inputs).float().to(self.device)
