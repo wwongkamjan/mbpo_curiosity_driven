@@ -56,7 +56,7 @@ class SAC(object):
 
 
         state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
-        # samples for dynamics model loss
+        # dynamics model loss
         if  predict_env:
             delta_state_batch = next_state_batch - state_batch
             train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
@@ -74,8 +74,6 @@ class SAC(object):
         action_batch = torch.FloatTensor(action_batch).to(self.device)
         reward_batch = torch.FloatTensor(reward_batch).to(self.device).unsqueeze(1)
         mask_batch = torch.FloatTensor(mask_batch).to(self.device).unsqueeze(1)
-
-
 
 
         with torch.no_grad():
