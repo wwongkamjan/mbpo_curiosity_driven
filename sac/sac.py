@@ -55,7 +55,7 @@ class SAC(object):
         
         state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
         # dynamics model loss
-        losses = []
+        batch_loss = []
         if  predict_env:
 
             delta_state_batch = next_state_batch - state_batch
@@ -72,12 +72,13 @@ class SAC(object):
                 train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
                 train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
                 # print("in dynamic model: ", train_input.size())
+                losses = []
                 mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
-                _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
-
-                #sum over ensemble model
-                loss = torch.sum(loss)
-                losses.append(float(loss.item()))
+                loss, _ = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+                losses.append(loss)
+                #avg over ensemble model
+                batch_loss.append(loss)
+                
 
             # train_input = torch.from_numpy(train_inputs).float().to(self.device)
             # train_label = torch.from_numpy(train_labels).float().to(self.device)
@@ -86,8 +87,8 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
-            print(mean(losses))
-            mse_model_loss= mean(losses)
+            print(mean(batch_loss))
+            mse_model_loss= mean(batch_loss)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
