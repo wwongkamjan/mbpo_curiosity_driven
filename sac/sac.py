@@ -69,17 +69,21 @@ class SAC(object):
 
             train_idx = np.vstack([np.random.permutation(train_inputs.shape[0]) for _ in range(predict_env.model.network_size)])
             # train_idx = np.vstack([np.arange(train_inputs.shape[0])] for _ in range(self.network_size))
-            for start_pos in range(0, train_inputs.shape[0], batch_size):
-                idx = train_idx[:, start_pos: start_pos + batch_size]
-                train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
-                train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
-                # print("in dynamic model: ", train_input.size())
-                losses = []
-                mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
-                _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
-                losses.append(loss)
-                #avg over ensemble model
-                batch_loss.append(torch.mean(loss).item())
+            # for start_pos in range(0, train_inputs.shape[0], batch_size):
+            #     idx = train_idx[:, start_pos: start_pos + batch_size]
+            #     train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
+            #     train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
+
+            train_input = torch.from_numpy(train_inputs[train_idx]).float().to(self.device)
+            train_label = torch.from_numpy(train_labels[train_idx]).float().to(self.device)
+            # print("in dynamic model: ", train_input.size())
+            # losses = []
+            mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
+            _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+            # losses.append(loss)
+            #avg over ensemble model
+            # batch_loss.append(torch.mean(loss).item())
+            mse_model_loss = loss.item()
                 
 
             # train_input = torch.from_numpy(train_inputs).float().to(self.device)
@@ -89,11 +93,11 @@ class SAC(object):
             # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
 
             #avg over batchs
-            mse_model_loss = 0
-            for i in range (len(batch_loss)):
+            # mse_model_loss = 0
+            # for i in range (len(batch_loss)):
 
-                mse_model_loss += batch_loss[i]
-            mse_model_loss= mse_model_loss/len(batch_loss)
+            #     mse_model_loss += batch_loss[i]
+            # mse_model_loss= mse_model_loss/len(batch_loss)
             # print(mse_model_loss)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
