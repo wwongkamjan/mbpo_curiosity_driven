@@ -255,6 +255,7 @@ class EnsembleDynamicsModel():
                       .format(epoch, np.mean(holdout_mse_losses), np.sqrt(np.var(holdout_mse_losses))))
                 logger.info('model_epoch: {}, losses_avg: {}, losses_std: {}'
                             .format(epoch, np.mean(holdout_mse_losses), np.sqrt(np.var(holdout_mse_losses))))
+        return mean(holdout_mse_losses)
 
     def _save_best(self, epoch, holdout_losses):
         updated = False

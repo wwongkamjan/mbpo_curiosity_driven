@@ -131,7 +131,7 @@ def train(args, env_sampler, env_sampler_test, predict_env, predict_act, agent, 
                 print ("env_pool: {}, model_pool: {}".format(len(env_pool), len(model_pool)))
                 logger.info("env_pool: {}, model_pool: {}".format(len(env_pool), len(model_pool)))
 
-                train_predict_model(args, env_pool, predict_env, logger)
+                dynamics_loss = train_predict_model(args, env_pool, predict_env, logger)
                 # train_inverse_model(args, env_pool, predict_act, logger)
                 # train_obs_policy(args, env_pool, predict_env, obs_agent)
 
@@ -146,7 +146,7 @@ def train(args, env_sampler, env_sampler_test, predict_env, predict_act, agent, 
             env_pool.push(cur_state, action, reward, next_state, done)
 
             if len(env_pool) > args.min_pool_size:
-                train_policy_steps += train_policy_repeats(args, total_step, train_policy_steps, cur_step, env_pool, model_pool, agent, predict_env)
+                train_policy_steps += train_policy_repeats(args, total_step, train_policy_steps, cur_step, env_pool, model_pool, agent, dynamics_loss)
 
             total_step += 1
 
@@ -199,7 +199,7 @@ def train_predict_model(args, env_pool, predict_env, logger):
     inputs = np.concatenate((state, action), axis=-1)
     # print("in dynamics after concat: ", inputs.shape)
     labels = np.concatenate((np.reshape(reward, (reward.shape[0], -1)), delta_state), axis=-1)
-    predict_env.model.train(inputs, labels, batch_size=256, holdout_ratio=0.2, logger=logger)
+    return predict_env.model.train(inputs, labels, batch_size=256, holdout_ratio=0.2, logger=logger)
 
 
 def train_inverse_model(args, env_pool, predict_act, logger):
@@ -275,7 +275,7 @@ def train_policy_repeats(args, total_step, train_step, cur_step, env_pool, model
 
         batch_reward, batch_done = np.squeeze(batch_reward), np.squeeze(batch_done)
         batch_done = (~batch_done).astype(int)
-        agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done), args.policy_train_batch_size, i, predict_env)
+        agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done), args.policy_train_batch_size, i, dynamics_loss)
 
     return args.num_train_repeat
 
