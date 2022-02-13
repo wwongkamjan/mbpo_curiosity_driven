@@ -54,6 +54,7 @@ class SAC(object):
         # state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory.sample(batch_size=batch_size)
         
         state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
+        print(state_batch.shape)
         # dynamics model loss
         batch_loss = []
         if  predict_env:
