@@ -83,7 +83,7 @@ class SAC(object):
             # losses.append(loss)
             #avg over ensemble model
             # batch_loss.append(torch.mean(loss).item())
-            mse_model_loss = loss.item()
+            mse_model_loss = torch.mean(loss).item()
                 
 
             # train_input = torch.from_numpy(train_inputs).float().to(self.device)
