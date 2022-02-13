@@ -49,11 +49,50 @@ class SAC(object):
             _, _, action = self.policy.sample(state)
         return action.detach().cpu().numpy()[0]
 
-    def update_parameters(self, memory, batch_size, updates, dynamics_loss=None):
+    def update_parameters(self, memory, batch_size, updates, predict_env=None):
         # Sample a batch from memory
         # state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory.sample(batch_size=batch_size)
         
         state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
+        # dynamics model loss
+        batch_loss = []
+        if  predict_env:
+
+            delta_state_batch = next_state_batch - state_batch
+            train_inputs = np.concatenate((state_batch, action_batch), axis=-1)
+            # print("in SAC after concat: ", train_inputs.shape)
+            train_labels = np.concatenate((np.reshape(reward_batch, (reward_batch.shape[0], -1)), delta_state_batch), axis=-1)
+            predict_env.model.scaler.fit(train_inputs)
+            train_inputs = predict_env.model.scaler.transform(train_inputs)
+
+            train_idx = np.vstack([np.random.permutation(train_inputs.shape[0]) for _ in range(predict_env.model.network_size)])
+            # train_idx = np.vstack([np.arange(train_inputs.shape[0])] for _ in range(self.network_size))
+            for start_pos in range(0, train_inputs.shape[0], batch_size):
+                idx = train_idx[:, start_pos: start_pos + batch_size]
+                train_input = torch.from_numpy(train_inputs[idx]).float().to(self.device)
+                train_label = torch.from_numpy(train_labels[idx]).float().to(self.device)
+                # print("in dynamic model: ", train_input.size())
+                losses = []
+                mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
+                _, loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+                losses.append(loss)
+                #avg over ensemble model
+                batch_loss.append(torch.mean(loss).item())
+                
+
+            # train_input = torch.from_numpy(train_inputs).float().to(self.device)
+            # train_label = torch.from_numpy(train_labels).float().to(self.device)
+            # # print("in SAC: ", train_input.size())
+            # mean, logvar = predict_env.model.ensemble_model(train_input, ret_log_var=True)
+            # _, mse_model_loss = predict_env.model.ensemble_model.loss(mean, logvar, train_label)
+
+            #avg over batchs
+            mse_model_loss = 0
+            for i in range (len(batch_loss)):
+
+                mse_model_loss += batch_loss[i]
+            mse_model_loss= mse_model_loss/len(batch_loss)
+            # print(mse_model_loss)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
@@ -79,9 +118,9 @@ class SAC(object):
         min_qf_pi = torch.min(qf1_pi, qf2_pi)
         # r_e
         policy_loss = ((self.alpha * log_pi) - min_qf_pi).mean() # Jπ = 𝔼st∼D,εt∼N[α * logπ(f(εt;st)|st) − Q(st,f(εt;st))]
-        if  dynamics_loss:
+        if  predict_env:
             # r_i
-            policy_loss += (1/2)*dynamics_loss
+            policy_loss += (1/2)*mse_model_loss
         
         self.policy_optim.zero_grad()
         policy_loss.backward()
