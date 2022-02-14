@@ -110,7 +110,7 @@ def readParser():
     return parser.parse_args()
 
 
-def train(args, env_sampler, env_sampler_test, predict_env, predict_act, agent, obs_agent, env_pool, model_pool, logger):
+def train(args, env_sampler, env_sampler_test, predict_env, agent, obs_agent, env_pool, model_pool, logger):
     total_step = 0
     reward_sum = 0
     rollout_length = 1
@@ -344,8 +344,8 @@ def main(args=None):
         env_model = EnsembleDynamicsModel(args.num_networks, args.num_elites, state_size, action_size, args.reward_size, args.pred_hidden_size,
                                           use_decay=args.use_decay)
         # inverse model - input (s,s') -> output a
-        inv_model = EnsembleDynamicsModel(args.num_networks, args.num_elites, state_size, action_size, args.reward_size, args.pred_hidden_size,
-                                          use_decay=args.use_decay)
+        # inv_model = EnsembleDynamicsModel(args.num_networks, args.num_elites, state_size, action_size, args.reward_size, args.pred_hidden_size,
+        #                                   use_decay=args.use_decay)
     else:
         raise ValueError(' this code blocked the tensorflow version of env_model')
         # env_model = construct_model(obs_dim=state_size, act_dim=action_size, hidden_dim=args.pred_hidden_size, num_networks=args.num_networks,
@@ -353,7 +353,7 @@ def main(args=None):
 
     # Predict environments
     predict_env = PredictEnv(env_model, args.env_name, args.model_type)
-    predict_act = PredictEnv(inv_model, args.env_name, args.model_type)
+    # predict_act = PredictEnv(inv_model, args.env_name, args.model_type)
 
     # Initial pool for env
     env_pool = ReplayMemory(args.replay_size)
@@ -367,7 +367,7 @@ def main(args=None):
     env_sampler = EnvSampler(env)
     env_sampler_test = EnvSampler(env_test)
 
-    train(args, env_sampler, env_sampler_test, predict_env, predict_act, agent, obs_agent, env_pool, model_pool, logger)
+    train(args, env_sampler, env_sampler_test, predict_env, agent, obs_agent, env_pool, model_pool, logger)
 
 
 if __name__ == '__main__':

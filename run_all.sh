@@ -15,11 +15,11 @@ module add Python3/3.7.6
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/nfshomes/wwongkam/.mujoco/mujoco200/bin
 
-srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_hopper_1'"
-srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_hopper_2'"
-srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_hopper_3'"
-srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_hopper_4'"
-srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_hopper_5'"
+srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_walker_1'"
+srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_walker_2'"
+srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_walker_3'"
+srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_walker_4'"
+srun bash -c "hostname; python3 main_mbpo.py --env_name 'Walker2d-v2' --num_epoch 100 --model_type 'pytorch' --num_epoch 2100 --save_dir 'exploration' --exp_name 'explo_walker_5'"
 
 # once the end of the batch script is reached your job allocation will be revoked
 
