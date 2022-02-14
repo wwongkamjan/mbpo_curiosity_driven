@@ -110,7 +110,7 @@ def readParser():
     return parser.parse_args()
 
 
-def train(args, env_sampler, env_sampler_test, predict_env, agent, obs_agent, env_pool, model_pool, logger):
+def train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger):
     total_step = 0
     reward_sum = 0
     rollout_length = 1
@@ -335,7 +335,7 @@ def main(args=None):
     # execution agent
     agent = SAC(env.observation_space.shape[0], env.action_space, args)
     # observation agent
-    obs_agent = SAC(env.observation_space.shape[0], env.action_space, args)
+    # obs_agent = SAC(env.observation_space.shape[0], env.action_space, args)
 
     # Initial ensemble model
     state_size = np.prod(env.observation_space.shape)
@@ -367,7 +367,7 @@ def main(args=None):
     env_sampler = EnvSampler(env)
     env_sampler_test = EnvSampler(env_test)
 
-    train(args, env_sampler, env_sampler_test, predict_env, agent, obs_agent, env_pool, model_pool, logger)
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
 
 
 if __name__ == '__main__':
