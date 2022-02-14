@@ -142,7 +142,7 @@ def train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, mod
 
                 rollout_model(args, predict_env, agent, model_pool, env_pool, rollout_length)
 
-            cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+            cur_state, action, next_state, reward, done, info = env_sampler.sample(agent)
             env_pool.push(cur_state, action, reward, next_state, done)
 
             if len(env_pool) > args.min_pool_size:
