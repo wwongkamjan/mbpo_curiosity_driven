@@ -1,0 +1,2 @@
+slurmstepd: error: *** JOB 491295 ON cml00 CANCELLED AT 2022-02-15T22:40:01 ***
+slurmstepd: error: *** STEP 491295.0 ON cml00 CANCELLED AT 2022-02-15T22:40:01 ***

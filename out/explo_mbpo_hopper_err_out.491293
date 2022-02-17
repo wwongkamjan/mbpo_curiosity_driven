@@ -1,0 +1,45 @@
+Traceback (most recent call last):
+  File "main_mbpo.py", line 374, in <module>
+    main()
+  File "main_mbpo.py", line 370, in main
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
+  File "main_mbpo.py", line 145, in train
+    cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+NameError: name 'obs_agent' is not defined
+srun: error: cml00: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "main_mbpo.py", line 374, in <module>
+    main()
+  File "main_mbpo.py", line 370, in main
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
+  File "main_mbpo.py", line 145, in train
+    cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+NameError: name 'obs_agent' is not defined
+srun: error: cml00: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "main_mbpo.py", line 374, in <module>
+    main()
+  File "main_mbpo.py", line 370, in main
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
+  File "main_mbpo.py", line 145, in train
+    cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+NameError: name 'obs_agent' is not defined
+srun: error: cml00: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "main_mbpo.py", line 374, in <module>
+    main()
+  File "main_mbpo.py", line 370, in main
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
+  File "main_mbpo.py", line 145, in train
+    cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+NameError: name 'obs_agent' is not defined
+srun: error: cml00: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "main_mbpo.py", line 374, in <module>
+    main()
+  File "main_mbpo.py", line 370, in main
+    train(args, env_sampler, env_sampler_test, predict_env, agent, env_pool, model_pool, logger)
+  File "main_mbpo.py", line 145, in train
+    cur_state, action, next_state, reward, done, info = env_sampler.sample(obs_agent)
+NameError: name 'obs_agent' is not defined
+srun: error: cml00: task 0: Exited with exit code 1
